@@ -1,0 +1,13 @@
+# Go build artifacts
+*.tgz
+/app
+/out
+
+# Helm
+helm/charts/
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+
