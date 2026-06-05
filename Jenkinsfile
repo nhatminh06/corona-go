@@ -77,7 +77,7 @@ pipeline {
               -H "X-Vault-Token: ${VAULT_TOKEN}" \
               http://vault.lab:8200/v1/app-creds/data/jenkins-tools)
 
-            echo "$TOOLS" | jq -r '.data.data.kubeconfig' > kubeconfig.yaml
+            echo "$TOOLS" | jq -r '.data.data.kubeconfig' | base64 -d > kubeconfig.yaml
             echo "HARBOR_USER=$(echo "$TOOLS" | jq -r '.data.data.harborUser')"     > build-creds.env
             echo "HARBOR_PASS=$(echo "$TOOLS" | jq -r '.data.data.harborPassword')" >> build-creds.env
             echo "NEXUS_USER=$(echo "$TOOLS"  | jq -r '.data.data.nexusUser')"      >> build-creds.env
