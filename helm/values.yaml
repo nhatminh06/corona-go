@@ -25,6 +25,4 @@ resources:
   limits:
     cpu: "200m"
     memory: "128Mi"
-vault:
-  apiKey: ""
-  externalToken: ""
+

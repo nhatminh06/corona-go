@@ -1,21 +1,21 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
 )
 
 var (
-    version         = getenv("APP_VERSION", "dev")
-    apiKey          = getenv("APP_API_KEY", "<not-set>")
-    externalToken   = getenv("APP_EXTERNAL_TOKEN", "<not-set>")
-    startTime       = time.Now()
+	version   = getenv("APP_VERSION", "dev")
+	startTime = time.Now()
 )
 
 func getenv(key, fallback string) string {
@@ -25,18 +25,43 @@ func getenv(key, fallback string) string {
 	return fallback
 }
 
+// readSecretFile reads key=value pairs from the Vault Agent secret file
+func readSecretFile(path string) map[string]string {
+	secrets := make(map[string]string)
+	f, err := os.Open(path)
+	if err != nil {
+		return secrets
+	}
+	defer f.Close()
+
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+		parts := strings.SplitN(line, "=", 2)
+		if len(parts) == 2 {
+			secrets[strings.TrimSpace(parts[0])] = strings.TrimSpace(parts[1])
+		}
+	}
+	return secrets
+}
+
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-    resp := map[string]any{
-        "service":   "corona-go",
-        "requestID": uuid.New().String(),
-        "message":   "hello from the Go service",
-        "secretsLoaded": map[string]bool{
-            "apiKey":        apiKey != "<not-set>",
-            "externalToken": externalToken != "<not-set>",
-        },
-    }
-    w.Header().Set("Content-Type", "application/json")
-    _ = json.NewEncoder(w).Encode(resp)
+	secrets := readSecretFile("/vault/secrets/app-creds")
+
+	resp := map[string]any{
+		"service":   "corona-go",
+		"requestID": uuid.New().String(),
+		"message":   "hello from the Go service",
+		"secretsLoaded": map[string]bool{
+			"apiKey":        secrets["apiKey"] != "",
+			"externalToken": secrets["externalServiceToken"] != "",
+		},
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(resp)
 }
 
 func versionHandler(w http.ResponseWriter, r *http.Request) {
