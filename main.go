@@ -25,7 +25,6 @@ func getenv(key, fallback string) string {
 	return fallback
 }
 
-// readSecretFile reads key=value pairs from the Vault Agent secret file
 func readSecretFile(path string) map[string]string {
 	secrets := make(map[string]string)
 	f, err := os.Open(path)
@@ -33,7 +32,6 @@ func readSecretFile(path string) map[string]string {
 		return secrets
 	}
 	defer f.Close()
-
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
@@ -50,7 +48,6 @@ func readSecretFile(path string) map[string]string {
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
 	secrets := readSecretFile("/vault/secrets/app-creds")
-
 	resp := map[string]any{
 		"service":   "corona-go",
 		"requestID": uuid.New().String(),
@@ -81,7 +78,6 @@ func main() {
 	http.HandleFunc("/", helloHandler)
 	http.HandleFunc("/version", versionHandler)
 	http.HandleFunc("/health", healthHandler)
-
 	port := getenv("PORT", "8080")
 	log.Printf("corona-go listening on :%s", port)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
