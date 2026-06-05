@@ -1,5 +1,5 @@
 # Build stage — uses Nexus go-proxy (anonymous reads)
-FROM harbor.lab:8080/library/golang:1.23-alpine AS build
+FROM harbor.lab:8080/library/golang:1.26.4-alpine AS build
 WORKDIR /build
 
 # Route module fetches through Nexus
