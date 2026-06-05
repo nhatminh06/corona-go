@@ -25,6 +25,10 @@ spec:
           env:
             - name: APP_VERSION
               value: "{{ .Values.image.tag }}"
+	    - name: APP_API_KEY
+              value: "{{ .Values.vault.apiKey }}"
+            - name: APP_EXTERNAL_TOKEN
+              value: "{{ .Values.vault.externalToken }}"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           readinessProbe:

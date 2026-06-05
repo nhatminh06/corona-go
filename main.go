@@ -12,8 +12,10 @@ import (
 )
 
 var (
-	version   = getenv("APP_VERSION", "dev")
-	startTime = time.Now()
+    version         = getenv("APP_VERSION", "dev")
+    apiKey          = getenv("APP_API_KEY", "<not-set>")
+    externalToken   = getenv("APP_EXTERNAL_TOKEN", "<not-set>")
+    startTime       = time.Now()
 )
 
 func getenv(key, fallback string) string {
@@ -24,13 +26,17 @@ func getenv(key, fallback string) string {
 }
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-	resp := map[string]any{
-		"service":   "corona-go",
-		"requestID": uuid.New().String(),
-		"message":   "hello from the Go service",
-	}
-	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(resp)
+    resp := map[string]any{
+        "service":   "corona-go",
+        "requestID": uuid.New().String(),
+        "message":   "hello from the Go service",
+        "secretsLoaded": map[string]bool{
+            "apiKey":        apiKey != "<not-set>",
+            "externalToken": externalToken != "<not-set>",
+        },
+    }
+    w.Header().Set("Content-Type", "application/json")
+    _ = json.NewEncoder(w).Encode(resp)
 }
 
 func versionHandler(w http.ResponseWriter, r *http.Request) {
