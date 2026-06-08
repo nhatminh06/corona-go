@@ -38,7 +38,7 @@ pipeline {
     stage('Security: SCA (trivy)') {
       steps {
         sh '''
-          trivy fs --severity HIGH,CRITICAL --exit-code 0 --no-progress .
+          trivy fs --severity HIGH,CRITICAL --exit-code 0 --timeout 10m .
           echo "Trivy scan complete (report-only)"
         '''
       }
