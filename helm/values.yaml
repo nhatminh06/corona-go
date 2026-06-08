@@ -25,4 +25,5 @@ resources:
   limits:
     cpu: "200m"
     memory: "128Mi"
-
+nodeSelector:
+  kubernetes.io/hostname: k8s-worker	

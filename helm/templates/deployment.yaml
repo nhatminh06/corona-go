@@ -24,6 +24,8 @@ spec:
           {{- end }}`}}
     spec:
       serviceAccountName: corona-go
+      nodeSelector:
+        kubernetes.io/hostname: k8s-worker
       imagePullSecrets:
         - name: {{ .Values.imagePullSecret }}
       containers:
