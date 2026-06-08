@@ -3,12 +3,13 @@ WORKDIR /app
 
 ENV GOPROXY=http://nexus.lab:8081/repository/go-proxy/,direct
 ENV GONOSUMCHECK=*
-ENV GOINSECURE=nexus.lab
+ENV GOFLAGS=-insecure
 
-COPY go.mod go.sum ./
-RUN go mod download
+COPY go.mod ./
+RUN go mod tidy
 
 COPY . .
+RUN go mod tidy
 RUN go build -o corona-go .
 
 FROM harbor.lab:8080/library/alpine:3.19
