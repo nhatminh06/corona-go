@@ -26,6 +26,10 @@ spec:
       serviceAccountName: corona-go
       nodeSelector:
         kubernetes.io/hostname: k8s-worker
+      hostAliases:
+        - ip: "10.146.183.231"
+          hostnames:
+            - "vault.lab"
       imagePullSecrets:
         - name: {{ .Values.imagePullSecret }}
       containers:
