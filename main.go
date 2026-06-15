@@ -109,6 +109,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	secrets := readSecretFile("/vault/secrets/app-creds")
 	resp := map[string]any{
 		"service":   "corona-go",
+    		"version": "v1",
 		"requestID": uuid.New().String(),
 		"message":   "hello from the Go service",
 		"secretsLoaded": map[string]bool{
