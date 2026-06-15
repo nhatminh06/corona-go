@@ -3,16 +3,19 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}
   labels:
-    app: {{ .Release.Name }}
+    app: corona-go
+    version: {{ .Values.version | default "v1" }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Release.Name }}
+      app: corona-go
+      version: {{ .Values.version | default "v1" }}
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}
+        app: corona-go
+        version: {{ .Values.version | default "v1" }}
       annotations:
         traffic.sidecar.istio.io/excludeOutboundPorts: "8200,8201"
         vault.hashicorp.com/agent-inject: "true"
