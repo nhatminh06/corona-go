@@ -29,3 +29,5 @@ nodeSelector:
   kubernetes.io/hostname: k8s-worker
 
 version: v1  
+
+createService: true
